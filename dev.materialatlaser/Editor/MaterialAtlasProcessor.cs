@@ -26,13 +26,32 @@ namespace MaterialAtlaser.Editors
             }
         }
 
+        /// <summary>
+        /// Every SkinnedMeshRenderer under the component's GameObject that has a mesh assigned -
+        /// the full scan, before excludedRenderers is applied. Shared with the Inspector so the
+        /// "Skinned Meshes" list shows exactly what the scan itself sees.
+        /// </summary>
+        public static SkinnedMeshRenderer[] ScanSkinnedRenderers(AtlasSkinnedMeshMaterials component)
+        {
+            return component.transform.GetComponentsInChildren<SkinnedMeshRenderer>(true)
+                .Where(r => r.sharedMesh != null)
+                .ToArray();
+        }
+
+        /// <summary>Scanned renderers with excludedRenderers filtered out - what actually gets atlased.</summary>
+        public static SkinnedMeshRenderer[] GetIncludedSkinnedRenderers(AtlasSkinnedMeshMaterials component)
+        {
+            var excluded = component.excludedRenderers;
+            return ScanSkinnedRenderers(component)
+                .Where(r => excluded == null || !excluded.Contains(r))
+                .ToArray();
+        }
+
         public static void Process(AtlasSkinnedMeshMaterials component)
         {
             var root = component.transform;
 
-            var skinnedRenderers = root.GetComponentsInChildren<SkinnedMeshRenderer>(true)
-                .Where(r => r.sharedMesh != null)
-                .ToArray();
+            var skinnedRenderers = GetIncludedSkinnedRenderers(component);
             var meshRenderers = component.ignoreRegularMeshes
                 ? Array.Empty<MeshRenderer>()
                 : root.GetComponentsInChildren<MeshRenderer>(true)

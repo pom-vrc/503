@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MaterialAtlaser.Runtime
@@ -69,5 +70,13 @@ namespace MaterialAtlaser.Runtime
         [Header("Merge")]
         [Tooltip("After atlasing, combine every affected SkinnedMeshRenderer into a single SkinnedMeshRenderer sharing one merged mesh, instead of leaving the renderers separate for d4rkAvatarOptimizer (or another tool) to merge afterwards. Turn this on if d4rkAvatarOptimizer isn't picking up the merge on its own - it looks for renderers/materials that are already trivially mergeable, and this does that merge directly rather than hoping it recognizes the result. Only SkinnedMeshRenderers are combined; plain MeshRenderers (even if atlased because 'Ignore Regular Meshes' is off) are left separate. Renderers that rely on being toggled independently (e.g. via animated active-state) should not be merged, since they'd lose that independence.")]
         [SerializeField] public bool mergeSkinnedMeshesAndMaterialSlots = true;
+
+        /// <summary>
+        /// SkinnedMeshRenderers found under this GameObject that are excluded from atlasing/merging,
+        /// even though the automatic scan would otherwise pick them up. Managed from the "Skinned
+        /// Meshes" list in the Inspector - not meant to be edited directly.
+        /// </summary>
+        [HideInInspector]
+        [SerializeField] public List<SkinnedMeshRenderer> excludedRenderers = new List<SkinnedMeshRenderer>();
     }
 }
