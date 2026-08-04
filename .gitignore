@@ -1,0 +1,7 @@
+.DS_Store
+Thumbs.db
+*.user
+*.userprefs
+.idea/
+.vs/
+*.zip

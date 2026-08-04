@@ -1,0 +1,24 @@
+{
+  "name": "dev.materialatlaser",
+  "version": "1.0.0",
+  "displayName": "Material Atlaser",
+  "description": "Non-destructive material/texture atlaser for VRChat avatars. Packs SkinnedMeshRenderer materials' main textures into shared atlas textures, remaps UVs, and merges meshes and material slots down to as few as one. Built on NDMF, so nothing is touched until you enter Play mode or upload.",
+  "unity": "2022.3",
+  "license": "MIT",
+  "keywords": [
+    "vrchat",
+    "ndmf",
+    "avatar-optimization",
+    "texture-atlas",
+    "material-merge",
+    "mesh-merge"
+  ],
+  "author": {
+    "name": "Your Name Here"
+  },
+  "vpmDependencies": {
+    "nadena.dev.ndmf": ">=1.14.3",
+    "com.vrchat.base": ">=3.10.0",
+    "com.vrchat.avatars": ">=3.10.0"
+  }
+}

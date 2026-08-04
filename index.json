@@ -1,0 +1,50 @@
+{
+  "name": "Your Name Here's VRChat Avatar Tools",
+  "author": "Your Name Here",
+  "url": "https://raw.githubusercontent.com/<you>/<repo>/main/index.json",
+  "id": "dev.yourname.vrc-tools",
+  "packages": {
+    "dev.shapekeydecimator": {
+      "versions": {
+        "1.0.0": {
+          "name": "dev.shapekeydecimator",
+          "version": "1.0.0",
+          "displayName": "Shape Key Decimator",
+          "description": "Non-destructive polygon decimation driven by shape keys for VRChat avatars. The vertices moved by each listed blend shape define a region, and triangles inside it are reduced by quadric error metric edge collapses; a whole-mesh pass can reduce everything left over. Built on NDMF, so nothing is touched until you enter Play mode or upload.",
+          "unity": "2022.3",
+          "license": "MIT",
+          "author": {
+            "name": "Your Name Here"
+          },
+          "vpmDependencies": {
+            "nadena.dev.ndmf": ">=1.14.3",
+            "com.vrchat.base": ">=3.10.0",
+            "com.vrchat.avatars": ">=3.10.0"
+          },
+          "url": "https://github.com/<you>/<repo>/releases/download/dev.shapekeydecimator-1.0.0/dev.shapekeydecimator-1.0.0.zip"
+        }
+      }
+    },
+    "dev.materialatlaser": {
+      "versions": {
+        "1.0.0": {
+          "name": "dev.materialatlaser",
+          "version": "1.0.0",
+          "displayName": "Material Atlaser",
+          "description": "Non-destructive material/texture atlaser for VRChat avatars. Packs SkinnedMeshRenderer materials' main textures into shared atlas textures, remaps UVs, and merges meshes and material slots down to as few as one. Built on NDMF, so nothing is touched until you enter Play mode or upload.",
+          "unity": "2022.3",
+          "license": "MIT",
+          "author": {
+            "name": "Your Name Here"
+          },
+          "vpmDependencies": {
+            "nadena.dev.ndmf": ">=1.14.3",
+            "com.vrchat.base": ">=3.10.0",
+            "com.vrchat.avatars": ">=3.10.0"
+          },
+          "url": "https://github.com/<you>/<repo>/releases/download/dev.materialatlaser-1.0.0/dev.materialatlaser-1.0.0.zip"
+        }
+      }
+    }
+  }
+}
