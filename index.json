@@ -1,7 +1,7 @@
 {
   "name": "pom-vrc's VRChat Avatar Tools",
   "author": "pom-vrc",
-  "url": "https://raw.githubusercontent.com/pom-vrc/503/main/index.json",
+  "url": "https://raw.githubusercontent.com/pom-vrc/503/master/index.json",
   "id": "com.pom-vrc.503",
   "packages": {
     "dev.shapekeydecimator": {
