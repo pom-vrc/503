@@ -1,3 +1,5 @@
+ai
+
 # pom-vrc's VRChat Avatar Tools
 
 A small VPM repository with two NDMF-based, non-destructive avatar optimization tools:
