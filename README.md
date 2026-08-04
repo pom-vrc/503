@@ -1,4 +1,4 @@
-# VRChat Avatar Tools
+# pom-vrc's VRChat Avatar Tools
 
 A small VPM repository with two NDMF-based, non-destructive avatar optimization tools:
 
@@ -13,13 +13,11 @@ and the original mesh/material/texture assets are never modified.
 
 ## Installing
 
-<!-- TODO: replace <you>/<repo> with the real GitHub path once this is pushed -->
-
 **Via VRChat Creator Companion / ALCOM:** add this repository listing URL under
 Settings -> Packages -> Add Repository:
 
 ```
-https://raw.githubusercontent.com/<you>/<repo>/main/index.json
+https://raw.githubusercontent.com/pom-vrc/503/main/index.json
 ```
 
 Then add "Shape Key Decimator" and/or "Material Atlaser" to your avatar project from the
@@ -29,8 +27,8 @@ Packages tab, same as any other VCC package.
 from git URL:
 
 ```
-https://github.com/<you>/<repo>.git?path=/dev.shapekeydecimator
-https://github.com/<you>/<repo>.git?path=/dev.materialatlaser
+https://github.com/pom-vrc/503.git?path=/dev.shapekeydecimator
+https://github.com/pom-vrc/503.git?path=/dev.materialatlaser
 ```
 
 **One-click installer:** double-click `dev.shapekeydecimator.unitypackage` or

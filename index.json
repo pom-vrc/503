@@ -1,8 +1,8 @@
 {
-  "name": "Your Name Here's VRChat Avatar Tools",
-  "author": "Your Name Here",
-  "url": "https://raw.githubusercontent.com/<you>/<repo>/main/index.json",
-  "id": "dev.yourname.vrc-tools",
+  "name": "pom-vrc's VRChat Avatar Tools",
+  "author": "pom-vrc",
+  "url": "https://raw.githubusercontent.com/pom-vrc/503/main/index.json",
+  "id": "com.pom-vrc.503",
   "packages": {
     "dev.shapekeydecimator": {
       "versions": {
@@ -14,14 +14,14 @@
           "unity": "2022.3",
           "license": "MIT",
           "author": {
-            "name": "Your Name Here"
+            "name": "pom-vrc"
           },
           "vpmDependencies": {
             "nadena.dev.ndmf": ">=1.14.3",
             "com.vrchat.base": ">=3.10.0",
             "com.vrchat.avatars": ">=3.10.0"
           },
-          "url": "https://github.com/<you>/<repo>/releases/download/dev.shapekeydecimator-1.0.0/dev.shapekeydecimator-1.0.0.zip"
+          "url": "https://github.com/pom-vrc/503/releases/download/dev.shapekeydecimator-1.0.0/dev.shapekeydecimator-1.0.0.zip"
         }
       }
     },
@@ -35,14 +35,14 @@
           "unity": "2022.3",
           "license": "MIT",
           "author": {
-            "name": "Your Name Here"
+            "name": "pom-vrc"
           },
           "vpmDependencies": {
             "nadena.dev.ndmf": ">=1.14.3",
             "com.vrchat.base": ">=3.10.0",
             "com.vrchat.avatars": ">=3.10.0"
           },
-          "url": "https://github.com/<you>/<repo>/releases/download/dev.materialatlaser-1.0.0/dev.materialatlaser-1.0.0.zip"
+          "url": "https://github.com/pom-vrc/503/releases/download/dev.materialatlaser-1.0.0/dev.materialatlaser-1.0.0.zip"
         }
       }
     }

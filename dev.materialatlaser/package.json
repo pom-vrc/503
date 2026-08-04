@@ -14,7 +14,8 @@
     "mesh-merge"
   ],
   "author": {
-    "name": "Your Name Here"
+    "name": "pom-vrc",
+    "url": "https://github.com/pom-vrc"
   },
   "vpmDependencies": {
     "nadena.dev.ndmf": ">=1.14.3",

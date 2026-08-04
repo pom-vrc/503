@@ -5,3 +5,7 @@ Thumbs.db
 .idea/
 .vs/
 *.zip
+
+# Built installer .unitypackage files - these get attached to GitHub Releases,
+# not committed to the repo itself. Rebuild them locally whenever needed.
+/installers/
