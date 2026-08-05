@@ -77,6 +77,13 @@ namespace ShapeKeyDecimator.Editors
             "Search",
             "{0} tris",
 
+            // Blacklist
+            "Never Decimate",
+            "Shape keys listed here always keep their full geometry. They cannot be decimated by their own region (adding one here removes it from the list above) or by the whole mesh pass.",
+            "{0} protected tris",
+            "No shape keys blacklisted.",
+            "Add shape key to blacklist ({0} available)",
+
             // Apply / preview
             "Decimation happens during the build (Play mode or avatar upload). Your original mesh asset is never modified.",
             "Create Decimated Copy In Hierarchy",
@@ -146,6 +153,13 @@ namespace ShapeKeyDecimator.Editors
             "削減するシェイプキーを追加（{0} 件）",
             "検索",
             "{0} 三角形",
+
+            // ブラックリスト
+            "常に削減しない",
+            "ここに登録したシェイプキーは常に元の形状を維持します。自身の領域として削減されることも（上のリストには同時に追加できません）、メッシュ全体の削減で巻き込まれることもありません。",
+            "保護中 {0} 三角形",
+            "ブラックリストされたシェイプキーはありません。",
+            "ブラックリストに追加（{0} 件）",
 
             // 適用・プレビュー
             "削減はビルド時（Playモードまたはアバターのアップロード時）に実行されます。元のメッシュアセットは変更されません。",

@@ -1,6 +1,6 @@
 {
   "name": "dev.shapekeydecimator",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "displayName": "Shape Key Decimator",
   "description": "Non-destructive polygon decimation driven by shape keys for VRChat avatars. The vertices moved by each listed blend shape define a region, and triangles inside it are reduced by quadric error metric edge collapses; a whole-mesh pass can reduce everything left over. Built on NDMF, so nothing is touched until you enter Play mode or upload.",
   "unity": "2022.3",

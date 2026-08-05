@@ -65,6 +65,10 @@ That ordering is why the **Whole mesh** row's triangle count is not the original
 
 Boundary protection is inherently a no-op for the whole-mesh pass (nothing is outside the region), but border, submesh and normal-deviation protection all still apply, so it will not tear open hems or slide vertices across material seams.
 
+## Never Decimate (blacklist)
+
+Some shape keys need their geometry to stay untouched no matter what — a jaw key whose vertices must line up exactly with a jaw bone, for instance. Expand **Add shape key to blacklist** and press **+** to protect one. A blacklisted shape key cannot also sit in the regular shape-key list (adding it to one removes it from the other), and the whole-mesh pass skips its vertices too — nothing decimates that region, ever, from either source.
+
 ## Options
 
 | Option | What it does |

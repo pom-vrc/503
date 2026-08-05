@@ -48,6 +48,9 @@ namespace ShapeKeyDecimator.Runtime
 
         [SerializeField] public List<ShapeKeyDecimationTarget> shapeKeys = new List<ShapeKeyDecimationTarget>();
 
+        [Tooltip("Shape keys whose region is never decimated - not by their own region (they cannot be in the list above at the same time) and not by the whole mesh pass either.")]
+        [SerializeField] public List<string> blacklistedShapeKeys = new List<string>();
+
         [Header("Whole Mesh")]
         [Tooltip("Decimation applied to the entire mesh after every shape key region has been processed. 0 = no decimation, 1 = maximum.")]
         [Range(0f, 1f)] [SerializeField] public float wholeMeshStrength;
@@ -90,6 +93,7 @@ namespace ShapeKeyDecimator.Runtime
         public void SanitizeInEditor()
         {
             if (shapeKeys == null) shapeKeys = new List<ShapeKeyDecimationTarget>();
+            if (blacklistedShapeKeys == null) blacklistedShapeKeys = new List<string>();
             if (renderers == null) renderers = Array.Empty<SkinnedMeshRenderer>();
             if (meshRenderers == null) meshRenderers = Array.Empty<MeshRenderer>();
             if (previewDisabledRenderers == null) previewDisabledRenderers = new List<Renderer>();

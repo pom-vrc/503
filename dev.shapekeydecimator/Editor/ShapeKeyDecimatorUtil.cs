@@ -199,6 +199,26 @@ namespace ShapeKeyDecimator.Editors
             var any = false;
             var wholeMeshStrength = 0f;
 
+            // Blacklisted shape keys are never decimated by their own region (a component cannot
+            // list the same name in both places at once - the inspector enforces that) or by the
+            // whole-mesh pass. Threshold is recorded per name so the region it protects is computed
+            // with whichever component's delta threshold blacklisted it.
+            var blacklistThresholds = new Dictionary<string, float>();
+            if (allowShapeKeys)
+            {
+                foreach (var component in components)
+                {
+                    if (component == null) continue;
+                    if (!target.IsTargetedBy(component)) continue;
+                    if (component.blacklistedShapeKeys == null) continue;
+                    foreach (var name in component.blacklistedShapeKeys)
+                    {
+                        if (string.IsNullOrEmpty(name)) continue;
+                        if (!blacklistThresholds.ContainsKey(name)) blacklistThresholds[name] = component.deltaThreshold;
+                    }
+                }
+            }
+
             foreach (var component in components)
             {
                 if (component == null) continue;
@@ -222,6 +242,7 @@ namespace ShapeKeyDecimator.Editors
                     if (string.IsNullOrEmpty(entry.blendShape)) continue;
                     if (entry.strength <= 0f) continue;
                     if (!available.Contains(entry.blendShape)) continue;
+                    if (blacklistThresholds.ContainsKey(entry.blendShape)) continue;
 
                     // The same shape key listed by two components: keep the stronger request.
                     if (seen.TryGetValue(entry.blendShape, out var existingIndex))
@@ -249,11 +270,38 @@ namespace ShapeKeyDecimator.Editors
             // original topology and the general pass then thins out whatever is left.
             if (wholeMeshStrength > 0f)
             {
+                bool[] wholeMeshAffected = null;   // null means "every vertex"
+
+                if (blacklistThresholds.Count > 0)
+                {
+                    if (vertToGroup == null) vertToGroup = WeldVertices(mesh.vertices, out _);
+
+                    var protectedVerts = new bool[mesh.vertexCount];
+                    var anyProtected = false;
+                    foreach (var pair in blacklistThresholds)
+                    {
+                        if (!available.Contains(pair.Key)) continue;
+                        var affected = ComputeAffectedVertices(mesh, pair.Key, pair.Value, vertToGroup);
+                        for (var v = 0; v < protectedVerts.Length; v++)
+                        {
+                            if (!affected[v]) continue;
+                            protectedVerts[v] = true;
+                            anyProtected = true;
+                        }
+                    }
+
+                    if (anyProtected)
+                    {
+                        wholeMeshAffected = new bool[mesh.vertexCount];
+                        for (var v = 0; v < wholeMeshAffected.Length; v++) wholeMeshAffected[v] = !protectedVerts[v];
+                    }
+                }
+
                 regions.Add(new ShapeKeyMeshDecimator.Region
                 {
                     name = WholeMeshRegionName,
                     strength = wholeMeshStrength,
-                    affectedVertices = null   // null means "every vertex"
+                    affectedVertices = wholeMeshAffected
                 });
             }
 

@@ -22,6 +22,23 @@
             "com.vrchat.avatars": ">=3.10.0"
           },
           "url": "https://github.com/pom-vrc/503/releases/download/dev.shapekeydecimator-1.0.0/dev.shapekeydecimator-1.0.0.zip"
+        },
+        "1.1.0": {
+          "name": "dev.shapekeydecimator",
+          "version": "1.1.0",
+          "displayName": "Shape Key Decimator",
+          "description": "Non-destructive polygon decimation driven by shape keys for VRChat avatars. The vertices moved by each listed blend shape define a region, and triangles inside it are reduced by quadric error metric edge collapses; a whole-mesh pass can reduce everything left over. Shape keys can also be blacklisted so their region is never touched by either pass. Built on NDMF, so nothing is touched until you enter Play mode or upload.",
+          "unity": "2022.3",
+          "license": "MIT",
+          "author": {
+            "name": "pom-vrc"
+          },
+          "vpmDependencies": {
+            "nadena.dev.ndmf": ">=1.14.3",
+            "com.vrchat.base": ">=3.10.0",
+            "com.vrchat.avatars": ">=3.10.0"
+          },
+          "url": "https://github.com/pom-vrc/503/releases/download/dev.shapekeydecimator-1.1.0/dev.shapekeydecimator-1.1.0.zip"
         }
       }
     },

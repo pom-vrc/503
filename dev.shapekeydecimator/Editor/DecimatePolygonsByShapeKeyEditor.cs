@@ -35,6 +35,10 @@ namespace ShapeKeyDecimator.Editors
         private string _search = "";
         private Vector2 _addScroll;
 
+        private bool _showBlacklistAddList;
+        private string _blacklistSearch = "";
+        private Vector2 _blacklistAddScroll;
+
         private static GUIStyle _wrappedMiniLabel;
 
         /// <summary>Shorthand for the localization table.</summary>
@@ -72,6 +76,11 @@ namespace ShapeKeyDecimator.Editors
             public int[] vertToGroup;
             public int totalTriangles;
             public readonly Dictionary<string, int> regionTriangles = new Dictionary<string, int>();
+
+            // Triangles inside the union of every currently blacklisted shape key's region.
+            // Invalidated whenever the blacklist's contents change, not just the threshold.
+            public string blacklistKey;
+            public int blacklistedTriangles = -1;
         }
 
         private static MeshRegionCache GetCache(Mesh mesh, float threshold)
@@ -109,6 +118,39 @@ namespace ShapeKeyDecimator.Editors
             var affected = ShapeKeyDecimatorUtil.ComputeAffectedVertices(mesh, shapeKey, threshold, cache.vertToGroup);
             var count = ShapeKeyDecimatorUtil.CountTrianglesInRegion(mesh, affected);
             cache.regionTriangles[shapeKey] = count;
+            return count;
+        }
+
+        /// <summary>
+        /// Triangles inside the union of every blacklisted shape key's region, i.e. triangles the
+        /// whole mesh pass is not allowed to touch. Rate limited and cached the same way as
+        /// <see cref="TryGetRegionTriangles"/>; -1 means not computed yet this repaint.
+        /// </summary>
+        private static int TryGetBlacklistedTriangles(Mesh mesh, List<string> blacklist, float threshold, ref int budget)
+        {
+            if (mesh == null || blacklist == null || blacklist.Count == 0) return 0;
+
+            var cache = GetCache(mesh, threshold);
+            var key = string.Join("", blacklist.Where(n => !string.IsNullOrEmpty(n)).OrderBy(n => n, System.StringComparer.Ordinal));
+            if (cache.blacklistKey == key) return cache.blacklistedTriangles;
+            if (budget <= 0) return -1;
+
+            budget--;
+            var protectedVerts = new bool[mesh.vertexCount];
+            foreach (var name in blacklist)
+            {
+                if (string.IsNullOrEmpty(name)) continue;
+                if (mesh.GetBlendShapeIndex(name) < 0) continue;
+                var affected = ShapeKeyDecimatorUtil.ComputeAffectedVertices(mesh, name, threshold, cache.vertToGroup);
+                for (var v = 0; v < protectedVerts.Length; v++)
+                {
+                    if (affected[v]) protectedVerts[v] = true;
+                }
+            }
+
+            var count = ShapeKeyDecimatorUtil.CountTrianglesInRegion(mesh, protectedVerts);
+            cache.blacklistKey = key;
+            cache.blacklistedTriangles = count;
             return count;
         }
 
@@ -260,13 +302,30 @@ namespace ShapeKeyDecimator.Editors
                 EditorUtility.SetDirty(my);
             }
 
-            projectedRemoved += DrawWholeMeshRow(my, originalTotal - projectedRemoved, pending, measured);
+            // Blacklisted regions are never eligible for the whole-mesh pass, so subtract them from
+            // its estimated remaining triangles too. Once a real pass is measured this is superseded
+            // by the exact figure, which already excludes them via BuildRegionsFor.
+            var blacklistedTriangles = 0;
+            var blacklistIncomplete = false;
+            foreach (var target in skinnedTargets)
+            {
+                var value = TryGetBlacklistedTriangles(target.SharedMesh, my.blacklistedShapeKeys, my.deltaThreshold, ref budget);
+                if (value < 0) blacklistIncomplete = true;
+                else blacklistedTriangles += value;
+            }
+            if (blacklistIncomplete) pending = true;
+
+            var wholeMeshRemaining = Mathf.Max(0, originalTotal - projectedRemoved - blacklistedTriangles);
+            projectedRemoved += DrawWholeMeshRow(my, wholeMeshRemaining, pending, measured);
 
             // Measured removal is authoritative. Apply it to the full scene total rather than using
             // the report's own original count, since renderers that produced no regions are not in
             // the report but still contribute triangles to what the user sees.
             var totalRemoved = measured != null ? measured.TrianglesRemoved : projectedRemoved;
             DrawTotals(my, targets, settingsHash, originalTotal, totalRemoved, pending, measured != null);
+
+            EditorGUILayout.Space();
+            DrawBlacklistSection(my, skinnedTargets, ref budget, ref pending);
 
             EditorGUILayout.Space();
             DrawAddSection(my, skinnedTargets, ref budget, ref pending);
@@ -509,12 +568,145 @@ namespace ShapeKeyDecimator.Editors
             }
         }
 
+        // ------------------------------------------------------------------ blacklist
+
+        /// <summary>
+        /// Shape keys listed here keep their region untouched no matter what: they cannot also
+        /// appear in the regular shape-key list above (adding one here removes it from there), and
+        /// the whole-mesh pass excludes their vertices too (enforced in
+        /// <see cref="ShapeKeyDecimatorUtil.BuildRegionsFor"/>).
+        /// </summary>
+        private void DrawBlacklistSection(DecimatePolygonsByShapeKey my, List<DecimationTarget> skinnedTargets,
+            ref int budget, ref bool pending)
+        {
+            EditorGUILayout.LabelField(T("Never Decimate"), EditorStyles.boldLabel);
+            GUILayout.Label(
+                T("Shape keys listed here always keep their full geometry. They cannot be decimated by their own region (adding one here removes it from the list above) or by the whole mesh pass."),
+                WrappedMiniLabel);
+
+            var toRemove = -1;
+            for (var i = 0; i < my.blacklistedShapeKeys.Count; i++)
+            {
+                var name = my.blacklistedShapeKeys[i];
+                if (string.IsNullOrEmpty(name)) continue;
+
+                var regionTriangles = 0;
+                var incomplete = false;
+                foreach (var target in skinnedTargets)
+                {
+                    var value = TryGetRegionTriangles(target.SharedMesh, name, my.deltaThreshold, ref budget);
+                    if (value < 0) incomplete = true;
+                    else regionTriangles += value;
+                }
+                if (incomplete) pending = true;
+
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    EditorGUILayout.LabelField(new GUIContent(name, name), GUILayout.MinWidth(60f));
+                    using (new EditorGUI.DisabledScope(true))
+                    {
+                        EditorGUILayout.LabelField(
+                            incomplete ? "…" : T("{0} protected tris", ShapeKeyDecimatorUtil.FormatCount(regionTriangles)),
+                            GUILayout.Width(CountColumnWidth + 60f));
+                    }
+                    if (GUILayout.Button("×", EditorStyles.miniButton, GUILayout.Width(ButtonColumnWidth)))
+                    {
+                        toRemove = i;
+                    }
+                }
+            }
+
+            if (toRemove >= 0)
+            {
+                Undo.RecordObject(my, "Remove shape key from blacklist");
+                my.blacklistedShapeKeys.RemoveAt(toRemove);
+                EditorUtility.SetDirty(my);
+            }
+
+            if (my.blacklistedShapeKeys.Count == 0)
+            {
+                EditorGUILayout.LabelField(T("No shape keys blacklisted."), EditorStyles.miniLabel);
+            }
+
+            DrawAddToBlacklistSection(my, skinnedTargets, ref budget, ref pending);
+        }
+
+        private void DrawAddToBlacklistSection(DecimatePolygonsByShapeKey my, List<DecimationTarget> skinnedTargets,
+            ref int budget, ref bool pending)
+        {
+            var already = new HashSet<string>(my.blacklistedShapeKeys.Where(n => !string.IsNullOrEmpty(n)));
+
+            var available = new List<string>();
+            foreach (var target in skinnedTargets)
+            {
+                foreach (var name in ShapeKeyDecimatorUtil.GetBlendShapeNames(target.SharedMesh))
+                {
+                    if (!already.Contains(name) && !available.Contains(name)) available.Add(name);
+                }
+            }
+
+            _showBlacklistAddList = EditorGUILayout.Foldout(
+                _showBlacklistAddList, T("Add shape key to blacklist ({0} available)", available.Count), true);
+            if (!_showBlacklistAddList) return;
+
+            _blacklistSearch = EditorGUILayout.TextField(T("Search"), _blacklistSearch);
+
+            var filtered = string.IsNullOrWhiteSpace(_blacklistSearch)
+                ? available
+                : available.Where(n => n.IndexOf(_blacklistSearch.Trim(), System.StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+
+            var height = Mathf.Clamp(filtered.Count * 20f + 4f, 20f, 240f);
+            string pendingAdd = null;
+
+            using (var scope = new EditorGUILayout.ScrollViewScope(_blacklistAddScroll, GUILayout.Height(height)))
+            {
+                _blacklistAddScroll = scope.scrollPosition;
+                foreach (var name in filtered)
+                {
+                    var regionTriangles = 0;
+                    var incomplete = false;
+                    foreach (var target in skinnedTargets)
+                    {
+                        var value = TryGetRegionTriangles(target.SharedMesh, name, my.deltaThreshold, ref budget);
+                        if (value < 0) incomplete = true;
+                        else regionTriangles += value;
+                    }
+                    if (incomplete) pending = true;
+
+                    using (new EditorGUILayout.HorizontalScope())
+                    {
+                        if (GUILayout.Button("+", EditorStyles.miniButton, GUILayout.Width(ButtonColumnWidth)))
+                        {
+                            pendingAdd = name;
+                        }
+                        EditorGUILayout.LabelField(name);
+                        EditorGUILayout.LabelField(
+                            incomplete ? "…" : T("{0} tris", ShapeKeyDecimatorUtil.FormatCount(regionTriangles)),
+                            EditorStyles.miniLabel,
+                            GUILayout.Width(CountColumnWidth + 24f));
+                    }
+                }
+            }
+
+            if (pendingAdd == null) return;
+
+            Undo.RecordObject(my, "Add shape key to blacklist");
+            my.blacklistedShapeKeys.Add(pendingAdd);
+            my.shapeKeys.RemoveAll(e => e != null && e.blendShape == pendingAdd);
+            EditorUtility.SetDirty(my);
+            pending = true;   // triggers a repaint so the change appears immediately
+        }
+
         // ------------------------------------------------------------------ add shape keys
 
         private void DrawAddSection(DecimatePolygonsByShapeKey my, List<DecimationTarget> skinnedTargets,
             ref int budget, ref bool pending)
         {
             var alreadyAdded = new HashSet<string>(my.shapeKeys.Where(e => e != null).Select(e => e.blendShape));
+            foreach (var name in my.blacklistedShapeKeys)
+            {
+                if (!string.IsNullOrEmpty(name)) alreadyAdded.Add(name);
+            }
 
             var available = new List<string>();
             foreach (var target in skinnedTargets)

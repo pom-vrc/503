@@ -99,6 +99,14 @@ namespace ShapeKeyDecimator.Editors
                     }
                 }
 
+                if (component.blacklistedShapeKeys != null)
+                {
+                    foreach (var name in component.blacklistedShapeKeys)
+                    {
+                        hash = hash * 31 + (name != null ? name.GetHashCode() : 0);
+                    }
+                }
+
                 hash = hash * 31 + component.wholeMeshStrength.GetHashCode();
                 hash = hash * 31 + component.wholeMeshActive.GetHashCode();
                 hash = hash * 31 + component.deltaThreshold.GetHashCode();
