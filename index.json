@@ -79,6 +79,23 @@
           "url": "https://github.com/pom-vrc/503/releases/download/dev.materialatlaser-1.1.0/dev.materialatlaser-1.1.0.zip"
         }
       }
+    },
+    "dev.bonemerger": {
+      "versions": {
+        "1.0.0": {
+          "name": "dev.bonemerger",
+          "version": "1.0.0",
+          "displayName": "Bone Merger",
+          "description": "Destructive editor command that merges a bone into its parent, redistributing skin weights and recomputing bindposes so affected meshes deform identically. Right-click one or more bones in the Hierarchy and choose Bone Merger > Merge Selected Bone(s) Into Parent. Unlike the other tools in this repo this runs immediately and is not part of the NDMF build pipeline - use Undo (Ctrl+Z) to revert.",
+          "unity": "2022.3",
+          "license": "MIT",
+          "author": {
+            "name": "pom-vrc"
+          },
+          "vpmDependencies": {},
+          "url": "https://github.com/pom-vrc/503/releases/download/dev.bonemerger-1.0.0/dev.bonemerger-1.0.0.zip"
+        }
+      }
     }
   }
 }
