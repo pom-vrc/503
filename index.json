@@ -77,6 +77,23 @@
             "com.vrchat.avatars": ">=3.10.0"
           },
           "url": "https://github.com/pom-vrc/503/releases/download/dev.materialatlaser-1.1.0/dev.materialatlaser-1.1.0.zip"
+        },
+        "1.2.0": {
+          "name": "dev.materialatlaser",
+          "version": "1.2.0",
+          "displayName": "Material Atlaser",
+          "description": "Non-destructive material/texture atlaser for VRChat avatars. Packs SkinnedMeshRenderer materials' main textures into shared atlas textures (up to 8K), remaps UVs, and merges meshes and material slots down to as few as one. The merged mesh's name can target an existing skinned mesh by name (keeping references like VRCAvatarDescriptor's eyelids/viseme mesh intact) or default to the first included skinned mesh's name. English/Japanese UI. Built on NDMF, so nothing is touched until you enter Play mode or upload.",
+          "unity": "2022.3",
+          "license": "MIT",
+          "author": {
+            "name": "pom-vrc"
+          },
+          "vpmDependencies": {
+            "nadena.dev.ndmf": ">=1.14.3",
+            "com.vrchat.base": ">=3.10.0",
+            "com.vrchat.avatars": ">=3.10.0"
+          },
+          "url": "https://github.com/pom-vrc/503/releases/download/dev.materialatlaser-1.2.0/dev.materialatlaser-1.2.0.zip"
         }
       }
     },
@@ -94,6 +111,40 @@
           },
           "vpmDependencies": {},
           "url": "https://github.com/pom-vrc/503/releases/download/dev.bonemerger-1.0.0/dev.bonemerger-1.0.0.zip"
+        },
+        "1.1.0": {
+          "name": "dev.bonemerger",
+          "version": "1.1.0",
+          "displayName": "Bone Merger",
+          "description": "Destructive editor command that merges a bone into its parent, redistributing skin weights and recomputing bindposes so affected meshes deform identically. Right-click one or more bones in the Hierarchy and choose Bone Merger > Merge Selected Bone(s) Into Parent. English/Japanese UI (Tools > Bone Merger > Language). Unlike the other tools in this repo this runs immediately and is not part of the NDMF build pipeline - use Undo (Ctrl+Z) to revert.",
+          "unity": "2022.3",
+          "license": "MIT",
+          "author": {
+            "name": "pom-vrc"
+          },
+          "vpmDependencies": {},
+          "url": "https://github.com/pom-vrc/503/releases/download/dev.bonemerger-1.1.0/dev.bonemerger-1.1.0.zip"
+        }
+      }
+    },
+    "dev.zeroscalecutter": {
+      "versions": {
+        "1.0.0": {
+          "name": "dev.zeroscalecutter",
+          "version": "1.0.0",
+          "displayName": "Zero Scale Bone Cutter",
+          "description": "Non-destructive tool that removes the portion of a skinned mesh driven by zero-scale bones - a common trick for permanently hiding geometry. By default only cuts triangles fully enclosed by zero-scale weight, leaving blended boundary vertices intact so no hole is exposed; an Aggressive Removal option cuts anything touching a zero-scale bone at all. English/Japanese UI. Built on NDMF, so nothing is touched until you enter Play mode or upload.",
+          "unity": "2022.3",
+          "license": "MIT",
+          "author": {
+            "name": "pom-vrc"
+          },
+          "vpmDependencies": {
+            "nadena.dev.ndmf": ">=1.14.3",
+            "com.vrchat.base": ">=3.10.0",
+            "com.vrchat.avatars": ">=3.10.0"
+          },
+          "url": "https://github.com/pom-vrc/503/releases/download/dev.zeroscalecutter-1.0.0/dev.zeroscalecutter-1.0.0.zip"
         }
       }
     }

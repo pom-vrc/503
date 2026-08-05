@@ -47,6 +47,35 @@ namespace MaterialAtlaser.Editors
                 .ToArray();
         }
 
+        /// <summary>
+        /// What the merged mesh gets named when mergedMeshName is left blank: the first included
+        /// skinned mesh's own name, so "Body" becomes "Body (Merged)" rather than inheriting the
+        /// (possibly much less meaningful) name of the GameObject this component sits on. Shared by
+        /// Process() and the Inspector, so the live preview always matches what a bake will produce.
+        /// </summary>
+        public static string ComputeDefaultMergedMeshName(AtlasSkinnedMeshMaterials component)
+        {
+            var included = GetIncludedSkinnedRenderers(component);
+            var baseName = included.Length > 0 ? included[0].name : component.gameObject.name;
+            return baseName + " (Merged)";
+        }
+
+        /// <summary>
+        /// When mergedMeshName matches one of the included skinned meshes by name, merging targets
+        /// that renderer directly instead of whichever renderer happened to be first in scan order.
+        /// That renderer's GameObject and component survive as-is (everything else merges into it
+        /// and gets destroyed) - so anything holding a direct reference to it, most importantly
+        /// VRCAvatarDescriptor's eyelids/viseme "Body" mesh reference, keeps working. Returns null
+        /// when the name is blank or doesn't match anything, in which case the first renderer is
+        /// used, same as before this existed.
+        /// </summary>
+        public static SkinnedMeshRenderer FindNamedMergeTarget(AtlasSkinnedMeshMaterials component, SkinnedMeshRenderer[] included)
+        {
+            var trimmed = component.mergedMeshName?.Trim();
+            if (string.IsNullOrEmpty(trimmed)) return null;
+            return included.FirstOrDefault(r => r != null && string.Equals(r.name, trimmed, StringComparison.OrdinalIgnoreCase));
+        }
+
         public static void Process(AtlasSkinnedMeshMaterials component)
         {
             var root = component.transform;
@@ -130,7 +159,25 @@ namespace MaterialAtlaser.Editors
 
             if (component.mergeSkinnedMeshesAndMaterialSlots)
             {
-                SkinnedMeshMerger.Merge(component.gameObject.name, atlasedSkinnedRenderers.ToArray());
+                var atlasedArray = atlasedSkinnedRenderers.ToArray();
+                var namedTarget = FindNamedMergeTarget(component, atlasedArray);
+                var hasExplicitName = !string.IsNullOrWhiteSpace(component.mergedMeshName);
+                var meshName = hasExplicitName ? component.mergedMeshName.Trim() : ComputeDefaultMergedMeshName(component);
+                var primary = SkinnedMeshMerger.Merge(component.gameObject.name, atlasedArray, meshName, namedTarget);
+
+                // Renaming the mesh alone is invisible in the Hierarchy - the renderer's GameObject
+                // keeps whatever name it already had, which reads as "the custom name didn't take"
+                // to anyone glancing at the hierarchy rather than the Mesh field in the Inspector.
+                // Skipped when the name matched an existing renderer (namedTarget != null): that
+                // renderer is already named exactly this, and it's the one that survives, so there
+                // is nothing to rename. Otherwise only done when the name was set explicitly:
+                // silently renaming the surviving renderer's GameObject on the (far more common)
+                // default-name path could break an animation clip that targets it by its original
+                // relative path.
+                if (hasExplicitName && namedTarget == null && primary != null)
+                {
+                    primary.gameObject.name = meshName;
+                }
             }
         }
 

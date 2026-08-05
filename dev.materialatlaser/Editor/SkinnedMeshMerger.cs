@@ -28,10 +28,26 @@ namespace MaterialAtlaser.Editors
     /// </summary>
     internal static class SkinnedMeshMerger
     {
-        public static void Merge(string ownerName, SkinnedMeshRenderer[] renderers)
+        /// <summary>
+        /// Returns the surviving (primary) renderer, or null if there was nothing to merge.
+        /// <paramref name="preferredPrimary"/>, if given, becomes that survivor instead of whichever
+        /// renderer happens to be first - everything else still merges into it exactly the same way.
+        /// </summary>
+        public static SkinnedMeshRenderer Merge(
+            string ownerName, SkinnedMeshRenderer[] renderers, string meshName,
+            SkinnedMeshRenderer preferredPrimary = null)
         {
             var candidates = renderers.Where(r => r != null && r.sharedMesh != null).ToArray();
-            if (candidates.Length <= 1) return;
+            if (candidates.Length <= 1) return null;
+
+            if (preferredPrimary != null)
+            {
+                var preferredIndex = Array.IndexOf(candidates, preferredPrimary);
+                if (preferredIndex > 0)
+                {
+                    (candidates[0], candidates[preferredIndex]) = (candidates[preferredIndex], candidates[0]);
+                }
+            }
 
             var mergedBones = new List<Transform>();
             var mergedBindposes = new List<Matrix4x4>();
@@ -116,7 +132,7 @@ namespace MaterialAtlaser.Editors
                 }
             }
 
-            var mergedMesh = new Mesh { name = ownerName + " (Merged)" };
+            var mergedMesh = new Mesh { name = meshName };
             if (totalVertexCount > 65535) mergedMesh.indexFormat = IndexFormat.UInt32;
             mergedMesh.SetVertices(mergedVertices);
             mergedMesh.SetNormals(mergedNormals);
@@ -161,6 +177,8 @@ namespace MaterialAtlaser.Editors
 
             Debug.Log($"(AtlasSkinnedMeshMaterials) '{ownerName}': merged {candidates.Length} skinned meshes into " +
                       $"'{primary.gameObject.name}' ({mergedBones.Count} bone reference(s), {materialOrder.Count} material slot(s)).");
+
+            return primary;
         }
 
         private static T[] PadToVertexCount<T>(T[] source, int vertexCount)

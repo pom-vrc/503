@@ -15,13 +15,18 @@ namespace BoneMerger.Editors {
         const string ToolName = "Bone Merger";
         const string OutputFolder = "Assets/BoneMerger Output";
 
+        /// <summary>Shorthand for the localization table.</summary>
+        private static string T(string english) => BoneMergerLocalization.T(english);
+
+        private static string T(string english, params object[] args) => BoneMergerLocalization.T(english, args);
+
         [MenuItem("GameObject/Bone Merger/Merge Selected Bone(s) Into Parent", false, 20)]
         static void MergeSelectedBones() {
             var selected = Selection.transforms.Where(t => t != null && t.parent != null).ToList();
             var skippedNoParent = Selection.transforms.Length - selected.Count;
             if (selected.Count == 0) {
                 EditorUtility.DisplayDialog(ToolName,
-                    "Select one or more bones with a parent in the Hierarchy first.", "OK");
+                    T("Select one or more bones with a parent in the Hierarchy first."), T("OK"));
                 return;
             }
 
@@ -43,22 +48,22 @@ namespace BoneMerger.Editors {
 
             if (mergedBones.Count == 0) {
                 EditorUtility.DisplayDialog(ToolName,
-                    "None of the selected object(s) are referenced by any SkinnedMeshRenderer's bone weights. Nothing to merge.",
-                    "OK");
+                    T("None of the selected object(s) are referenced by any SkinnedMeshRenderer's bone weights. Nothing to merge."),
+                    T("OK"));
                 return;
             }
 
             var bonesWithExtraComponents = mergedBones.Where(b => b.GetComponents<Component>().Length > 1).ToList();
 
             var confirm = new StringBuilder();
-            confirm.AppendLine($"Merge {mergedBones.Count} bone(s) into their parent(s)?");
-            confirm.AppendLine($"{affectedRenderers.Length} renderer(s)/mesh(es) will be modified and saved to {OutputFolder}.");
-            confirm.AppendLine("The merged bone GameObject(s) will be deleted; any of their children that weren't also selected are reparented onto the merge target first.");
+            confirm.AppendLine(T("Merge {0} bone(s) into their parent(s)?", mergedBones.Count));
+            confirm.AppendLine(T("{0} renderer(s)/mesh(es) will be modified and saved to {1}.", affectedRenderers.Length, OutputFolder));
+            confirm.AppendLine(T("The merged bone GameObject(s) will be deleted; any of their children that weren't also selected are reparented onto the merge target first."));
             if (bonesWithExtraComponents.Count > 0)
-                confirm.AppendLine($"\n{bonesWithExtraComponents.Count} of them carry other components (PhysBone, constraints, etc.) - those will be deleted too.");
-            confirm.AppendLine("\nThis is destructive but undoable (Ctrl+Z).");
+                confirm.AppendLine(T("\n{0} of them carry other components (PhysBone, constraints, etc.) - those will be deleted too.", bonesWithExtraComponents.Count));
+            confirm.AppendLine(T("\nThis is destructive but undoable (Ctrl+Z)."));
 
-            if (!EditorUtility.DisplayDialog(ToolName, confirm.ToString(), "Merge", "Cancel"))
+            if (!EditorUtility.DisplayDialog(ToolName, confirm.ToString(), T("Merge"), T("Cancel")))
                 return;
 
             Undo.IncrementCurrentGroup();
@@ -97,18 +102,18 @@ namespace BoneMerger.Editors {
             Undo.CollapseUndoOperations(undoGroup);
 
             var summary = new StringBuilder();
-            summary.AppendLine($"Merged {mergedBones.Count} bone(s) into their parent(s).");
-            summary.AppendLine($"Updated {affectedRenderers.Length} renderer(s):");
+            summary.AppendLine(T("Merged {0} bone(s) into their parent(s).", mergedBones.Count));
+            summary.AppendLine(T("Updated {0} renderer(s):", affectedRenderers.Length));
             foreach (var path in updatedMeshPaths) summary.AppendLine($"  {path}");
             if (noWeightBones.Count > 0) {
-                summary.AppendLine($"\n{noWeightBones.Count} selected object(s) had no mesh weight and were left untouched:");
+                summary.AppendLine(T("\n{0} selected object(s) had no mesh weight and were left untouched:", noWeightBones.Count));
                 foreach (var b in noWeightBones)
                     if (b != null) summary.AppendLine($"  {b.name}");
             }
             if (skippedNoParent > 0)
-                summary.AppendLine($"\n{skippedNoParent} selected object(s) had no parent and were skipped.");
+                summary.AppendLine(T("\n{0} selected object(s) had no parent and were skipped.", skippedNoParent));
 
-            EditorUtility.DisplayDialog(ToolName, summary.ToString(), "OK");
+            EditorUtility.DisplayDialog(ToolName, summary.ToString(), T("OK"));
         }
 
         [MenuItem("GameObject/Bone Merger/Merge Selected Bone(s) Into Parent", true)]

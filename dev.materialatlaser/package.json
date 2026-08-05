@@ -1,6 +1,6 @@
 {
   "name": "dev.materialatlaser",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "displayName": "Material Atlaser",
   "description": "Non-destructive material/texture atlaser for VRChat avatars. Packs SkinnedMeshRenderer materials' main textures into shared atlas textures, remaps UVs, and merges meshes and material slots down to as few as one. Built on NDMF, so nothing is touched until you enter Play mode or upload.",
   "unity": "2022.3",

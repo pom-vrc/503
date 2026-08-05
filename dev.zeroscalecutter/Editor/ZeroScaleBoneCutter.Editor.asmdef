@@ -1,0 +1,22 @@
+{
+    "name": "ZeroScaleBoneCutter.Editor",
+    "rootNamespace": "ZeroScaleBoneCutter.Editors",
+    "references": [
+        "ZeroScaleBoneCutter.Runtime",
+        "VRC.SDKBase",
+        "VRC.SDK3A",
+        "nadena.dev.ndmf",
+        "nadena.dev.ndmf.runtime"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

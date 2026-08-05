@@ -1,0 +1,16 @@
+{
+    "name": "ZeroScaleBoneCutter.Runtime",
+    "rootNamespace": "ZeroScaleBoneCutter.Runtime",
+    "references": [
+        "VRC.SDKBase"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

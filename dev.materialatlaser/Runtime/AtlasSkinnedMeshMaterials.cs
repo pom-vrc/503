@@ -11,6 +11,7 @@ namespace MaterialAtlaser.Runtime
         [InspectorName("1024")] Res1024 = 1024,
         [InspectorName("2048")] Res2048 = 2048,
         [InspectorName("4096")] Res4096 = 4096,
+        [InspectorName("8192")] Res8192 = 8192,
     }
 
     /// <summary>
@@ -70,6 +71,9 @@ namespace MaterialAtlaser.Runtime
         [Header("Merge")]
         [Tooltip("After atlasing, combine every affected SkinnedMeshRenderer into a single SkinnedMeshRenderer sharing one merged mesh, instead of leaving the renderers separate for d4rkAvatarOptimizer (or another tool) to merge afterwards. Turn this on if d4rkAvatarOptimizer isn't picking up the merge on its own - it looks for renderers/materials that are already trivially mergeable, and this does that merge directly rather than hoping it recognizes the result. Only SkinnedMeshRenderers are combined; plain MeshRenderers (even if atlased because 'Ignore Regular Meshes' is off) are left separate. Renderers that rely on being toggled independently (e.g. via animated active-state) should not be merged, since they'd lose that independence.")]
         [SerializeField] public bool mergeSkinnedMeshesAndMaterialSlots = true;
+
+        [Tooltip("When meshes are actually merged (2+ skinned meshes with 'Merge Skinned Meshes And Material Slots' on), this does one of two things. If it matches one of the included skinned meshes by name, merging targets that renderer directly - it survives as-is instead of whichever renderer happened to be scanned first, so anything with a direct reference to it (most importantly VRCAvatarDescriptor's eyelids/viseme 'Body' mesh) keeps working. Otherwise it's just the merged mesh's name (and also renames the surviving renderer's GameObject to match, so it shows up in the Hierarchy, not just the Mesh field in its Inspector). Leave blank to default to the first included skinned mesh's name plus \" (Merged)\", with nothing renamed.")]
+        [SerializeField] public string mergedMeshName = "";
 
         /// <summary>
         /// SkinnedMeshRenderers found under this GameObject that are excluded from atlasing/merging,

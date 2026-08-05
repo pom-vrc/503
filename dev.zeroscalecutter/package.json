@@ -1,0 +1,24 @@
+{
+  "name": "dev.zeroscalecutter",
+  "version": "1.0.0",
+  "displayName": "Zero Scale Bone Cutter",
+  "description": "Non-destructive tool that removes the portion of a skinned mesh driven by zero-scale bones - a common trick for permanently hiding geometry. Built on NDMF, so nothing is touched until you enter Play mode or upload.",
+  "unity": "2022.3",
+  "license": "MIT",
+  "keywords": [
+    "vrchat",
+    "ndmf",
+    "avatar-optimization",
+    "mesh-cleanup",
+    "zero-scale-bone"
+  ],
+  "author": {
+    "name": "pom-vrc",
+    "url": "https://github.com/pom-vrc"
+  },
+  "vpmDependencies": {
+    "nadena.dev.ndmf": ">=1.14.3",
+    "com.vrchat.base": ">=3.10.0",
+    "com.vrchat.avatars": ">=3.10.0"
+  }
+}
