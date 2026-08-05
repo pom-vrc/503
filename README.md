@@ -17,7 +17,7 @@ and the original mesh/material/texture assets are never modified.
 
 **One-click (VCC / ALCOM):**
 
-[![Add to VCC](https://img.shields.io/badge/-Add%20to%20VCC-blue?style=for-the-badge)](vcc://vpm/addRepo?url=https://raw.githubusercontent.com/pom-vrc/503/master/index.json)
+[![Add to VCC](https://img.shields.io/badge/-Add%20to%20VCC-blue?style=for-the-badge)](https://pom-vrc.github.io/503/)
 
 **Manually, via VRChat Creator Companion / ALCOM:** add this repository listing URL under
 Settings -> Packages -> Add Repository:
