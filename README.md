@@ -15,11 +15,15 @@ and the original mesh/material/texture assets are never modified.
 
 ## Installing
 
-**Via VRChat Creator Companion / ALCOM:** add this repository listing URL under
+**One-click (VCC / ALCOM):**
+
+[![Add to VCC](https://img.shields.io/badge/-Add%20to%20VCC-blue?style=for-the-badge)](vcc://vpm/addRepo?url=https://raw.githubusercontent.com/pom-vrc/503/master/index.json)
+
+**Manually, via VRChat Creator Companion / ALCOM:** add this repository listing URL under
 Settings -> Packages -> Add Repository:
 
 ```
-https://raw.githubusercontent.com/pom-vrc/503/main/index.json
+https://raw.githubusercontent.com/pom-vrc/503/master/index.json
 ```
 
 Then add "Shape Key Decimator" and/or "Material Atlaser" to your avatar project from the
