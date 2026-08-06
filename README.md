@@ -52,12 +52,11 @@ https://github.com/pom-vrc/503.git?path=/dev.bonemerger
 https://github.com/pom-vrc/503.git?path=/dev.zeroscalecutter
 ```
 
-**One-click installer:** double-click `dev.shapekeydecimator.unitypackage` or
-`dev.materialatlaser.unitypackage` (attached to each GitHub Release) to install without VCC -
-these are tiny installer stubs (using anatawa12's VPM Package Auto Installer) that add the
-repository above and install the package automatically. (Bone Merger and Zero Scale Bone Cutter
-don't have one of these yet - add the repository above and install them from the Packages tab
-instead.)
+**One-click installer:** double-click `dev.shapekeydecimator.unitypackage`,
+`dev.materialatlaser.unitypackage`, `dev.bonemerger.unitypackage` or
+`dev.zeroscalecutter.unitypackage` (attached to each package's first GitHub Release) to install
+without VCC - these are tiny installer stubs (using anatawa12's VPM Package Auto Installer) that
+add the repository above and install the package automatically.
 
 ## License
 
