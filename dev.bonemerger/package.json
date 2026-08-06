@@ -1,6 +1,6 @@
 {
   "name": "dev.bonemerger",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "displayName": "Bone Merger",
   "description": "Destructive editor command that merges a bone into its parent, redistributing skin weights and recomputing bindposes so affected meshes deform identically. Right-click one or more bones in the Hierarchy and choose Bone Merger > Merge Selected Bone(s) Into Parent. Unlike the other tools in this repo this runs immediately and is not part of the NDMF build pipeline - use Undo (Ctrl+Z) to revert.",
   "unity": "2022.3",

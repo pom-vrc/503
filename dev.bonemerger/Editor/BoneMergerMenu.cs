@@ -34,24 +34,31 @@ namespace BoneMerger.Editors {
             var validSelections = selected.Where(t => mergeTargets[t] != null).ToList();
             skippedNoParent += selected.Count - validSelections.Count;
 
-            var selectedSet = new HashSet<Transform>(validSelections);
-            var allRenderers = Object.FindObjectsByType<SkinnedMeshRenderer>(FindObjectsSortMode.None);
-            var affectedRenderers = allRenderers
-                .Where(r => r.sharedMesh != null && r.bones != null && r.bones.Any(b => b != null && selectedSet.Contains(b)))
-                .ToArray();
-
-            var mergedBones = new HashSet<Transform>();
-            foreach (var r in affectedRenderers)
-                foreach (var b in r.bones)
-                    if (b != null && selectedSet.Contains(b)) mergedBones.Add(b);
-            var noWeightBones = validSelections.Where(t => !mergedBones.Contains(t)).ToList();
-
+            // Every valid selection is merged structurally - deleted, with its own children
+            // reparented onto its resolved target - whether or not it actually carries any mesh
+            // weight. A weightless bone (a twist/IK/socket helper, or just leftover from a prior
+            // edit) has nothing to remap on the mesh side, but there's no reason to silently skip
+            // it instead of folding it into its parent like the rest of the selection; leaving it
+            // out here previously meant it could still get destroyed as a side effect of ITS OWN
+            // parent being deleted (Unity destroys a GameObject's whole subtree), just without
+            // ever being reparented first - the worst of both outcomes.
+            var mergedBones = new HashSet<Transform>(validSelections);
             if (mergedBones.Count == 0) {
                 EditorUtility.DisplayDialog(ToolName,
-                    T("None of the selected object(s) are referenced by any SkinnedMeshRenderer's bone weights. Nothing to merge."),
-                    T("OK"));
+                    T("Select one or more bones with a parent in the Hierarchy first."), T("OK"));
                 return;
             }
+
+            var allRenderers = Object.FindObjectsByType<SkinnedMeshRenderer>(FindObjectsSortMode.None);
+            var affectedRenderers = allRenderers
+                .Where(r => r.sharedMesh != null && r.bones != null && r.bones.Any(b => b != null && mergedBones.Contains(b)))
+                .ToArray();
+
+            var weightedBones = new HashSet<Transform>();
+            foreach (var r in affectedRenderers)
+                foreach (var b in r.bones)
+                    if (b != null && mergedBones.Contains(b)) weightedBones.Add(b);
+            var noWeightBones = mergedBones.Where(t => !weightedBones.Contains(t)).ToList();
 
             var bonesWithExtraComponents = mergedBones.Where(b => b.GetComponents<Component>().Length > 1).ToList();
 
@@ -70,7 +77,7 @@ namespace BoneMerger.Editors {
             Undo.SetCurrentGroupName("Merge Bones Into Parent");
             var undoGroup = Undo.GetCurrentGroup();
 
-            if (!AssetDatabase.IsValidFolder(OutputFolder))
+            if (affectedRenderers.Length > 0 && !AssetDatabase.IsValidFolder(OutputFolder))
                 AssetDatabase.CreateFolder("Assets", "BoneMerger Output");
 
             var updatedMeshPaths = new List<string>();
@@ -92,7 +99,7 @@ namespace BoneMerger.Editors {
                 var target = mergeTargets[bone];
                 for (var i = bone.childCount - 1; i >= 0; i--) {
                     var child = bone.GetChild(i);
-                    if (!selectedSet.Contains(child))
+                    if (!mergedBones.Contains(child))
                         Undo.SetTransformParent(child, target, "Merge Bones Into Parent");
                 }
             }
@@ -106,7 +113,7 @@ namespace BoneMerger.Editors {
             summary.AppendLine(T("Updated {0} renderer(s):", affectedRenderers.Length));
             foreach (var path in updatedMeshPaths) summary.AppendLine($"  {path}");
             if (noWeightBones.Count > 0) {
-                summary.AppendLine(T("\n{0} selected object(s) had no mesh weight and were left untouched:", noWeightBones.Count));
+                summary.AppendLine(T("\n{0} of them had no mesh weight - merged structurally with nothing to remap:", noWeightBones.Count));
                 foreach (var b in noWeightBones)
                     if (b != null) summary.AppendLine($"  {b.name}");
             }

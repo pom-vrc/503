@@ -30,7 +30,6 @@ namespace BoneMerger.Editors {
 
         public static readonly string[] EnglishStrings = {
             "Select one or more bones with a parent in the Hierarchy first.",
-            "None of the selected object(s) are referenced by any SkinnedMeshRenderer's bone weights. Nothing to merge.",
             "Merge {0} bone(s) into their parent(s)?",
             "{0} renderer(s)/mesh(es) will be modified and saved to {1}.",
             "The merged bone GameObject(s) will be deleted; any of their children that weren't also selected are reparented onto the merge target first.",
@@ -40,7 +39,7 @@ namespace BoneMerger.Editors {
             "Cancel",
             "Merged {0} bone(s) into their parent(s).",
             "Updated {0} renderer(s):",
-            "\n{0} selected object(s) had no mesh weight and were left untouched:",
+            "\n{0} of them had no mesh weight - merged structurally with nothing to remap:",
             "\n{0} selected object(s) had no parent and were skipped.",
             "OK"
         };
@@ -49,7 +48,6 @@ namespace BoneMerger.Editors {
 
         public static readonly string[] JapaneseStrings = {
             "Hierarchyで親を持つボーンを1つ以上選択してください。",
-            "選択したオブジェクトはどのSkinnedMeshRendererのボーンウェイトからも参照されていません。マージするものがありません。",
             "{0} 個のボーンを親にマージしますか?",
             "{0} 個のレンダラー/メッシュが変更され、{1} に保存されます。",
             "マージされたボーンのGameObjectは削除されます。選択されていない子は、先にマージ先へ親を付け替えられます。",
@@ -59,7 +57,7 @@ namespace BoneMerger.Editors {
             "キャンセル",
             "{0} 個のボーンを親にマージしました。",
             "{0} 個のレンダラーを更新しました:",
-            "\n{0} 個の選択オブジェクトはメッシュのウェイトがなかったため、変更されませんでした:",
+            "\nそのうち {0} 個はメッシュのウェイトがなかったため、置き換えるものはありませんでしたが構造的にマージされました:",
             "\n{0} 個の選択オブジェクトは親を持たないためスキップされました。",
             "OK"
         };

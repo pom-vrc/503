@@ -124,6 +124,19 @@
           },
           "vpmDependencies": {},
           "url": "https://github.com/pom-vrc/503/releases/download/dev.bonemerger-1.1.0/dev.bonemerger-1.1.0.zip"
+        },
+        "1.2.0": {
+          "name": "dev.bonemerger",
+          "version": "1.2.0",
+          "displayName": "Bone Merger",
+          "description": "Destructive editor command that merges a bone into its parent, redistributing skin weights and recomputing bindposes so affected meshes deform identically. Right-click one or more bones in the Hierarchy and choose Bone Merger > Merge Selected Bone(s) Into Parent. A selected bone with no mesh weight is now merged structurally (deleted, children reparented) instead of being silently skipped. English/Japanese UI (Tools > Bone Merger > Language). Unlike the other tools in this repo this runs immediately and is not part of the NDMF build pipeline - use Undo (Ctrl+Z) to revert.",
+          "unity": "2022.3",
+          "license": "MIT",
+          "author": {
+            "name": "pom-vrc"
+          },
+          "vpmDependencies": {},
+          "url": "https://github.com/pom-vrc/503/releases/download/dev.bonemerger-1.2.0/dev.bonemerger-1.2.0.zip"
         }
       }
     },
